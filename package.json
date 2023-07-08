@@ -1,0 +1,20 @@
+{
+  "name": "external-data-svr",
+  "version": "1.0.0",
+  "description": "this is server which connects to external data providers",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "docker-compose  -f ./docker/docker.compose.yaml up"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bryndalski/chem-tech-external-data-svr.git"
+  },
+  "author": "Jakub Bryndal",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/bryndalski/chem-tech-external-data-svr/issues"
+  },
+  "homepage": "https://github.com/bryndalski/chem-tech-external-data-svr#readme"
+}

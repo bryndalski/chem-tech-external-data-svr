@@ -4,13 +4,21 @@ import { ConfigService } from '@nestjs/config';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
   const config = new ConfigService();
+  const app = await NestFactory.create(AppModule, {
+    logger:
+      config.get('NODE_ENV') !== 'production'
+        ? ['error', 'warn', 'debug', 'verbose', 'log']
+        : ['error', 'warn', 'log'],
+  });
+  app.setGlobalPrefix(config.get('DATA_SERVER_PREFIX'));
   const swaggerConfig = new DocumentBuilder()
-    .setTitle('ATS - admin ')
-    .setDescription('Admin swagger for ATS project')
+    .setTitle('LabRat - external data server - dev panel')
+    .setDescription(
+      'External data privider microservice. Connects to external provider: PUBCHEM.',
+    )
     .setVersion('1.1')
-    .addTag('Api', 'Admin')
+    .addTag('Labrat', 'external data server')
     .addBearerAuth()
     .build();
   const document = SwaggerModule.createDocument(app as any, swaggerConfig);
