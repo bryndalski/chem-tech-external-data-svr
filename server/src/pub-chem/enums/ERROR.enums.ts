@@ -1,3 +1,4 @@
-export enum errorEnum {
+export enum ErrorEnum {
   NO_COMPOUND = 'NO_COMPOUND',
+  DATA_TYPE_CHANGE = 'DATA_TYPE_CHANGE',
 }

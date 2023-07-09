@@ -5,8 +5,8 @@ import {
   Logger,
   NotFoundException,
 } from '@nestjs/common';
-import { FindBestMatchingCompoundDTO } from './DTO';
-import { Axios, AxiosError } from 'axios';
+import { AxiosError } from 'axios';
+import { IfindBestMatchingCompoundInterface } from './interfaces/findBestCoumpoind.interface';
 
 @Injectable()
 export class PubChemFinderService {
@@ -19,7 +19,9 @@ export class PubChemFinderService {
    * Finds compound id to look for in PubChemDatabase
    * @param param0
    */
-  public async findBestMatchingCompound(compoundName: string) {
+  public async findBestMatchingCompound(
+    compoundName: string,
+  ): Promise<IfindBestMatchingCompoundInterface> {
     try {
       this.logger.log({
         method: 'findBestMatchingCompound',
@@ -35,17 +37,16 @@ export class PubChemFinderService {
         method: 'findBestMatchingCompound',
         message: 'Received positive response from pub chem',
       });
-      const CID = this.getConceptCID(data);
+      const compoundChemName =
+        data['ConceptsAndCIDs']['Concept'][0]['ConceptName'];
       this.logger.log({
         method: 'findBestMatchingCompound',
-        message: 'Extracted CID from pub chem',
+        message: 'Found compound name',
         arguments: {
-          CID,
-          compoundName,
+          compoundChemName,
         },
       });
-
-      return CID;
+      return { compoundChemName };
     } catch (error) {
       if (error instanceof AxiosError) {
         if (error.response.status === 404) {
@@ -59,43 +60,17 @@ export class PubChemFinderService {
           throw new NotFoundException();
         }
       }
-      this.logger.error({
-        method: 'findBestMatchingCompound',
-        message: 'Error finding best matching compound',
-        error,
-      });
-      throw new InternalServerErrorException();
-    }
-  }
-
-  /**
-   * @private
-   * @bryndalski
-   * @param data Response from pub chem
-   * @returns CID for the compound
-   * @description Gets the CID for the compound
-   */
-  private getConceptCID(data: any) {
-    try {
-      this.logger.log({
-        method: 'getConceptCID',
-        message: 'Extracting CID from pub chem',
-      });
-      return data['ConceptsAndCIDs']['CID'][0];
-    } catch (error) {
       if (error instanceof TypeError) {
         this.logger.error({
-          method: 'getConceptId',
-          message: 'Could not get CID of compound. TYPE ERROR',
-          params: {
-            data,
-          },
+          method: 'findBestMatchingCompound',
+          message: 'Type error. Possible data structure change in pub chem',
+          error,
         });
         throw new InternalServerErrorException();
       }
       this.logger.error({
-        method: 'getConceptId',
-        message: 'Error getting concept id',
+        method: 'findBestMatchingCompound',
+        message: 'Error finding best matching compound',
         error,
       });
       throw new InternalServerErrorException();
