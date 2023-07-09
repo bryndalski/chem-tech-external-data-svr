@@ -1,8 +1,6 @@
 import { HttpService } from '@nestjs/axios';
 import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { PubChemFinderService } from './pub-chem-finder.service';
-import { NotFoundError } from 'rxjs';
-import { truncate } from 'fs';
 
 @Injectable()
 export class PubChemService {
