@@ -7,6 +7,7 @@ import {
 } from '@nestjs/common';
 import { AxiosError } from 'axios';
 import { IfindBestMatchingCompoundInterface } from './interfaces/findBestCoumpoind.interface';
+import { uuid } from 'uuidv4';
 
 @Injectable()
 export class PubChemFinderService {
@@ -17,7 +18,13 @@ export class PubChemFinderService {
 
   /**
    * Finds compound id to look for in PubChemDatabase
-   * @param param0
+   * @param {string} compoundName look for in PubChemDatabase
+   * @returns compoundChemName
+   * @throws NotFoundException
+   * @throws InternalServerErrorException
+   * @throws TypeError
+   * @example
+   *  const result = await service.findBestMatchingCompound("h2o") returns {compoundChemName: "Water"}
    */
   public async findBestMatchingCompound(
     compoundName: string,
@@ -68,12 +75,14 @@ export class PubChemFinderService {
         });
         throw new InternalServerErrorException();
       }
+      const errorId = uuid();
       this.logger.error({
         method: 'findBestMatchingCompound',
         message: 'Error finding best matching compound',
         error,
+        errorId,
       });
-      throw new InternalServerErrorException();
+      throw new InternalServerErrorException(errorId);
     }
   }
 }

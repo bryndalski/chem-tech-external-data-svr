@@ -1,5 +1,4 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { PubChemService } from './pub-chem.service';
 import { HttpModule, HttpService } from '@nestjs/axios';
 import { PubChemFinderService } from './pub-chem-finder.service';
 import { NotFoundException } from '@nestjs/common';
