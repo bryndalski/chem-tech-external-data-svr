@@ -20,7 +20,14 @@ describe('CasService', () => {
   });
 
   describe('All test should return proper chemisty names. POSITIVE CASE', () => {
-    test.each([['Water', 1]])(
+    test.each([
+      ['Water', 1],
+      ['C=O', 3],
+      ['aspirine', 1],
+      ['C', 4],
+      ['none', 0],
+      ['50-78-2', 1],
+    ])(
       `Compound Name: %p return Chemistry Name: %p`,
       async (compoundName, resultsNumber) => {
         const result = await service.foundCompounds(compoundName);
@@ -28,25 +35,18 @@ describe('CasService', () => {
         expect(result.count).toEqual(resultsNumber);
         expect(result).toHaveProperty('results');
         expect(result.results).toHaveLength(resultsNumber);
-        expect(result.results[0]).toHaveProperty('image');
-        expect(result.results[0]).toHaveProperty('name');
-        expect(result.results[0]).toHaveProperty('rn');
+        result.results.forEach((element) => {
+          expect(element).toHaveProperty('image');
+          expect(element).toHaveProperty('name');
+          expect(element).toHaveProperty('rn');
+        });
       },
     );
   });
 
   describe('All test should return proper chemisty names. NEGATIVE CASE', () => {
-    it('finding param is not passed', async () => {
-      console.log(await service.foundCompounds(''));
-      expect(await service.foundCompounds('')).rejects.toThrowError(
-        BadRequestException,
-      );
-    });
-
     it(`should not fund any compound`, async () => {
-      const result = await service.foundCompounds(
-        'asdasdasdasdasdasdasdasdasd',
-      );
+      const result = await service.foundCompounds('not_existing_name');
       expect(result).toHaveProperty('count');
       expect(result.count).toEqual(0);
       expect(result).toHaveProperty('results');

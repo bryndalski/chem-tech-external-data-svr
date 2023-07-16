@@ -34,7 +34,7 @@ export class CasService {
   public async foundCompounds(findCompound: string): Promise<IfoundCas> {
     try {
       if (!findCompound) {
-        throw new BadRequestException('findCompound is empty');
+        throw new BadRequestException('Compound name is not provided');
       }
       this.logger.log({
         method: 'foundCompounds',

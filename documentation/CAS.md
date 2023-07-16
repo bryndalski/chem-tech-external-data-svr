@@ -26,5 +26,3 @@ query should return data in the following structure
     ]
 }
 ```
-
-## In case of error look for statuses
